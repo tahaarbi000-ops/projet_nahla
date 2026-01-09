@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Inscription - LUXELOC</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700;900&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: #1e293b;
+            color: white;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 2rem;
+            position: relative;
+            overflow-x: hidden;
+        }
+
+        .background-shapes {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 20s ease-in-out infinite;
+        }
+
+        .shape1 {
+            width: 400px;
+            height: 400px;
+            background: #2563eb;
+            top: -100px;
+            left: -100px;
+            animation-delay: 0s;
+        }
+
+        .shape2 {
+            width: 300px;
+            height: 300px;
+            background: #0ea5e9;
+            bottom: -50px;
+            right: -50px;
+            animation-delay: 5s;
+        }
+
+        .shape3 {
+            width: 250px;
+            height: 250px;
+            background: #2563eb;
+            top: 50%;
+            right: 10%;
+            animation-delay: 10s;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                transform: translateY(-30px) scale(1.1);
+            }
+        }
+
+        .signup-container {
+            position: relative;
+            z-index: 1;
+            width: 100%;
+            max-width: 500px;
+            background: rgba(30, 41, 59, 0.8);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 24px;
+            padding: 3rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .logo h1 {
+            font-size: 2rem;
+            font-weight: 900;
+            color: #2563eb;
+            margin-bottom: 0.5rem;
+        }
+
+        .logo p {
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.95rem;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .header h2 {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+
+        .header p {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .form-group {
+            margin-bottom: 1.3rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 0.9rem;
+            font-weight: 500;
+        }
+
+        .form-group label .required {
+            color: #ef4444;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.9rem 1.2rem;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 12px;
+            color: white;
+            font-size: 1rem;
+            font-family: 'Inter', sans-serif;
+            transition: all 0.3s;
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255, 255, 255, 0.4);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            background: rgba(255, 255, 255, 0.12);
+            border-color: #2563eb;
+            box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+        }
+
+        .form-group input:valid {
+            border-color: rgba(34, 197, 94, 0.5);
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .password-strength {
+            margin-top: 0.5rem;
+            font-size: 0.85rem;
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .strength-bar {
+            height: 4px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 2px;
+            margin-top: 0.5rem;
+            overflow: hidden;
+        }
+
+        .strength-fill {
+            height: 100%;
+            width: 0%;
+            background: #ef4444;
+            transition: all 0.3s;
+        }
+
+        .strength-fill.weak {
+            width: 33%;
+            background: #ef4444;
+        }
+
+        .strength-fill.medium {
+            width: 66%;
+            background: #f59e0b;
+        }
+
+        .strength-fill.strong {
+            width: 100%;
+            background: #22c55e;
+        }
+
+        .checkbox-group {
+            margin: 1.5rem 0;
+        }
+
+        .checkbox-group label {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.5rem;
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+            cursor: pointer;
+        }
+
+        .checkbox-group input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            margin-top: 2px;
+            cursor: pointer;
+            accent-color: #2563eb;
+        }
+
+        .checkbox-group a {
+            color: #60a5fa;
+            text-decoration: none;
+        }
+
+        .checkbox-group a:hover {
+            text-decoration: underline;
+        }
+
+        .btn-submit {
+            width: 100%;
+            background: #2563eb;
+            color: white;
+            padding: 1rem;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin-top: 1rem;
+        }
+
+        .btn-submit:hover:not(:disabled) {
+            background: #1e40af;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
+        }
+
+        .btn-submit:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .divider {
+            display: flex;
+            align-items: center;
+            margin: 1.5rem 0;
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 0.9rem;
+        }
+
+        .divider::before,
+        .divider::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .divider span {
+            padding: 0 1rem;
+        }
+
+        .social-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .btn-social {
+            padding: 0.8rem;
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            color: white;
+            font-size: 0.9rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+        }
+
+        .btn-social:hover {
+            background: rgba(255, 255, 255, 0.1);
+            border-color: rgba(255, 255, 255, 0.2);
+        }
+
+        .footer-text {
+            text-align: center;
+            margin-top: 2rem;
+            color: rgba(255, 255, 255, 0.6);
+            font-size: 0.9rem;
+        }
+
+        .footer-text a {
+            color: #60a5fa;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .footer-text a:hover {
+            text-decoration: underline;
+        }
+
+        .error-message {
+            color: #ef4444;
+            font-size: 0.85rem;
+            margin-top: 0.3rem;
+            display: none;
+        }
+
+        .form-group input.error {
+            border-color: #ef4444;
+        }
+
+        .success-message {
+            background: rgba(34, 197, 94, 0.1);
+            border: 1px solid rgba(34, 197, 94, 0.3);
+            color: #22c55e;
+            padding: 1rem;
+            border-radius: 10px;
+            margin-bottom: 1.5rem;
+            display: none;
+        }
+
+        @media (max-width: 640px) {
+            .signup-container {
+                padding: 2rem 1.5rem;
+            }
+
+            .form-row {
+                grid-template-columns: 1fr;
+            }
+
+            .social-buttons {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="background-shapes">
+        <div class="shape shape1"></div>
+        <div class="shape shape2"></div>
+        <div class="shape shape3"></div>
+    </div>
+
+    <div class="signup-container">
+        <div class="logo">
+            <h1>LUXELOC</h1>
+            <p>Location de propriétés d'exception</p>
+        </div>
+
+        <div class="header">
+            <h2>Créer un compte</h2>
+            <p>Rejoignez LUXELOC et trouvez votre propriété idéale</p>
+        </div>
+
+        <div class="success-message" id="successMessage">
+            ✅ Inscription réussie ! Redirection en cours...
+        </div>
+
+        <form id="signupForm" onsubmit="handleSubmit(event)">
+            <div class="form-group">
+                <label>Numéro CIN <span class="required">*</span></label>
+                <input 
+                    type="text" 
+                    id="cin" 
+                    placeholder="12345678" 
+                    pattern="[0-9]{8}" 
+                    maxlength="8" 
+                    required
+                >
+                <div class="error-message" id="cinError">Le CIN doit contenir 8 chiffres</div>
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label>Nom <span class="required">*</span></label>
+                    <input 
+                        type="text" 
+                        id="lastName" 
+                        placeholder="Votre nom" 
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label>Prénom <span class="required">*</span></label>
+                    <input 
+                        type="text" 
+                        id="firstName" 
+                        placeholder="Votre prénom" 
+                        required
+                    >
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label>Email <span class="required">*</span></label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    placeholder="votre@email.com" 
+                    required
+                >
+                <div class="error-message" id="emailError">Veuillez entrer un email valide</div>
+            </div>
+
+            <div class="form-group">
+                <label>Numéro de téléphone <span class="required">*</span></label>
+                <input 
+                    type="tel" 
+                    id="phone" 
+                    placeholder="+216 XX XXX XXX" 
+                    pattern="[\+]?[0-9]{8,15}" 
+                    required
+                >
+                <div class="error-message" id="phoneError">Veuillez entrer un numéro valide</div>
+            </div>
+
+            <div class="form-group">
+                <label>Mot de passe <span class="required">*</span></label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    placeholder="••••••••" 
+                    minlength="8" 
+                    required
+                    oninput="checkPasswordStrength()"
+                >
+                <div class="strength-bar">
+                    <div class="strength-fill" id="strengthBar"></div>
+                </div>
+                <div class="password-strength" id="strengthText">Minimum 8 caractères</div>
+            </div>
+
+            <div class="form-group">
+                <label>Confirmer le mot de passe <span class="required">*</span></label>
+                <input 
+                    type="password" 
+                    id="confirmPassword" 
+                    placeholder="••••••••" 
+                    minlength="8" 
+                    required
+                    oninput="checkPasswordMatch()"
+                >
+                <div class="error-message" id="passwordError">Les mots de passe ne correspondent pas</div>
+            </div>
+
+            <div class="checkbox-group">
+                <label>
+                    <input type="checkbox" id="terms" required>
+                    <span>J'accepte les <a href="#">conditions d'utilisation</a> et la <a href="#">politique de confidentialité</a></span>
+                </label>
+            </div>
+
+            <button type="submit" class="btn-submit" id="submitBtn">
+                S'inscrire
+            </button>
+        </form>
+
+        <div class="divider">
+            <span>ou continuer avec</span>
+        </div>
+
+        <div class="social-buttons">
+            <button class="btn-social" onclick="alert('Connexion avec Google')">
+                <span>🔵</span> Google
+            </button>
+            <button class="btn-social" onclick="alert('Connexion avec Facebook')">
+                <span>📘</span> Facebook
+            </button>
+        </div>
+
+        <div class="footer-text">
+            Vous avez déjà un compte ? <a href="#" onclick="alert('Redirection vers la page de connexion')">Se connecter</a>
+        </div>
+    </div>
+
+    <script>
+        function checkPasswordStrength() {
+            const password = document.getElementById('password').value;
+            const strengthBar = document.getElementById('strengthBar');
+            const strengthText = document.getElementById('strengthText');
+
+            let strength = 0;
+            
+            if (password.length >= 8) strength++;
+            if (password.match(/[a-z]/) && password.match(/[A-Z]/)) strength++;
+            if (password.match(/[0-9]/)) strength++;
+            if (password.match(/[^a-zA-Z0-9]/)) strength++;
+
+            strengthBar.className = 'strength-fill';
+            
+            if (strength === 0 || strength === 1) {
+                strengthBar.classList.add('weak');
+                strengthText.textContent = 'Mot de passe faible';
+                strengthText.style.color = '#ef4444';
+            } else if (strength === 2 || strength === 3) {
+                strengthBar.classList.add('medium');
+                strengthText.textContent = 'Mot de passe moyen';
+                strengthText.style.color = '#f59e0b';
+            } else {
+                strengthBar.classList.add('strong');
+                strengthText.textContent = 'Mot de passe fort';
+                strengthText.style.color = '#22c55e';
+            }
+        }
+
+        function checkPasswordMatch() {
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const passwordError = document.getElementById('passwordError');
+            const confirmInput = document.getElementById('confirmPassword');
+
+            if (confirmPassword && password !== confirmPassword) {
+                passwordError.style.display = 'block';
+                confirmInput.classList.add('error');
+            } else {
+                passwordError.style.display = 'none';
+                confirmInput.classList.remove('error');
+            }
+        }
+
+        function validateForm() {
+            const cin = document.getElementById('cin').value;
+            const email = document.getElementById('email').value;
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+
+            let isValid = true;
+
+            // Validation CIN
+            if (!/^[0-9]{8}$/.test(cin)) {
+                document.getElementById('cinError').style.display = 'block';
+                document.getElementById('cin').classList.add('error');
+                isValid = false;
+            } else {
+                document.getElementById('cinError').style.display = 'none';
+                document.getElementById('cin').classList.remove('error');
+            }
+
+            // Validation Email
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                document.getElementById('emailError').style.display = 'block';
+                document.getElementById('email').classList.add('error');
+                isValid = false;
+            } else {
+                document.getElementById('emailError').style.display = 'none';
+                document.getElementById('email').classList.remove('error');
+            }
+
+            // Validation Téléphone
+            if (!/^[\+]?[0-9]{8,15}$/.test(phone)) {
+                document.getElementById('phoneError').style.display = 'block';
+                document.getElementById('phone').classList.add('error');
+                isValid = false;
+            } else {
+                document.getElementById('phoneError').style.display = 'none';
+                document.getElementById('phone').classList.remove('error');
+            }
+
+            // Validation Mot de passe
+            if (password !== confirmPassword) {
+                document.getElementById('passwordError').style.display = 'block';
+                document.getElementById('confirmPassword').classList.add('error');
+                isValid = false;
+            } else {
+                document.getElementById('passwordError').style.display = 'none';
+                document.getElementById('confirmPassword').classList.remove('error');
+            }
+
+            return isValid;
+        }
+
+        function handleSubmit(event) {
+            event.preventDefault();
+
+            if (!validateForm()) {
+                return;
+            }
+
+            // Récupération des données
+            const formData = {
+                cin: document.getElementById('cin').value,
+                lastName: document.getElementById('lastName').value,
+                firstName: document.getElementById('firstName').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                password: document.getElementById('password').value
+            };
+
+            console.log('Données du formulaire:', formData);
+
+            // Désactiver le bouton
+            const submitBtn = document.getElementById('submitBtn');
+            submitBtn.disabled = true;
+            submitBtn.textContent = 'Inscription en cours...';
+
+            // Simuler l'envoi au serveur
+            setTimeout(() => {
+                document.getElementById('successMessage').style.display = 'block';
+                document.getElementById('signupForm').style.display = 'none';
+
+                // Redirection après 2 secondes
+                setTimeout(() => {
+                    alert('Inscription réussie ! Bienvenue sur LUXELOC 🎉');
+                    // window.location.href = 'index.html'; // Décommenter pour rediriger
+                }, 2000);
+            }, 1500);
+        }
+    </script>
+</body>
+</html>
