@@ -1,3 +1,10 @@
+<?php
+    require_once("./connect.php");
+    session_start();
+    if(isset($_SESSION["info"])){
+        header("location:./index.php");
+    }
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -435,7 +442,7 @@
             ✅ Inscription réussie ! Redirection en cours...
         </div>
 
-        <form id="signupForm" onsubmit="handleSubmit(event)">
+        <form method="post" id="signupForm">
             <div class="groups">
 
             
@@ -446,6 +453,7 @@
                     type="email" 
                     id="email" 
                     placeholder="votre@email.com" 
+                    name="email"
                 >
                 <div class="error-message" id="emailError">Veuillez entrer un email valide</div>
             </div>
@@ -455,19 +463,44 @@
                 <label>Mot de passe <span class="required">*</span></label>
                 <input 
                     type="password" 
-                    id="password" 
+                    id="password"
+                    name="password"
                     placeholder="••••••••" 
                     minlength="8" 
                     oninput="checkPasswordStrength()"
                 >
             </div>
-            <button type="submit" class="btn-submit" id="submitBtn">
+            <button name="btn" type="submit" class="btn-submit" id="submitBtn">
                 S'inscrire
             </button>
     </div>
     <div class="footer-text">
             Vous avez déjà un compte ? <a href="#" onclick="alert('Redirection vers la page de connexion')">Se connecter</a>
         </div>
+        <?php
+        if (isset($_POST["btn"])) {
+    $email = trim($_POST["email"]);
+    $password = $_POST["password"];
+
+    $sql = "SELECT * FROM users WHERE email = '$email'";
+    $res = mysqli_query($conn,$sql);
+    if(mysqli_num_rows($res)){
+        $userData = mysqli_fetch_assoc($res);
+        $passwordCheck = password_verify($password,$userData["password"]);
+        if($passwordCheck){
+            $_SESSION["info"] = ["email" => $userData["email"],"role" => $userData["email"] ];
+            echo "ok";
+        }
+        else{
+            echo "not ok";
+        }
+    }
+
+    }
+    
+
+        
+        ?>
         </form>
 
 

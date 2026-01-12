@@ -1,3 +1,14 @@
+<?php
+    require_once("./connect.php");
+    session_start();
+    if(isset($_SESSION["info"])){
+        if(isset($_GET["logout"])){
+            session_unset();
+            session_destroy();
+            header("location:./index.php");
+        }
+    }
+?>
 <!DOCTYPE html>
 <html lang="fr">
 <head>
@@ -111,6 +122,42 @@
         nav a:hover::after {
             width: 100%;
         }
+        .user-menu {
+  position: relative;
+  cursor: pointer;
+}
+
+.user-name {
+  font-weight: 600;
+}
+
+.dropdown {
+  display: none;
+  position: absolute;
+  right: 0;
+  top: 120%;
+  background: #0f172a;
+  border-radius: 10px;
+  min-width: 180px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+  z-index: 10;
+}
+
+/* Dropdown links */
+.dropdown a {
+  display: block;
+  padding: 0.6rem 1rem;
+  color: white;
+  text-decoration: none;
+}
+
+.dropdown a:hover {
+  background: rgba(37, 99, 235, 0.2);
+}
+
+.logout {
+  color: #ef4444;
+}
 
         .hero {
             min-height: 100vh;
@@ -701,9 +748,32 @@
                 </ul>
             </div>
             <div class="nav-right">
+            <?php
+            if(isset($_SESSION["info"])){
+                $info = $_SESSION["info"];
+                $email = $info["email"];
+                $sql = "SELECT nom,prenom,role FROM users WHERE email = '$email'";
+                $response = mysqli_query($conn,$sql);
+                $user = mysqli_fetch_assoc($response);
+                echo "
+                    <div class='user-menu' id='userMenu'>
+                    <span class='user-name'>👤 " . $user["nom"] . " " . $user["prenom"] . " </span>
+                    <div class='dropdown' id='userDropdown'>
+                        <a href='./profile.php'>⚙️ Paramètres</a>
+                        <a href='./client/dashboard.php'>📊 Mon espace</a>
+                        <a href='?logout' class='logout'>🚪 Déconnexion</a>
+                    </div>
+                </div>
+                ";
+            }
+            else{
+                echo "
+                <a href='./login.php'>Se connecter</a>
+                <a href='./signup.php' class='btn-signup'>S'inscrire</a>
+                ";
+            }
+            ?>
             
-                <a href="./signup.html" class="btn-signin">Se connecter</a>
-                <a href="./signup.html" class="btn-signup">S'inscrire</a>
             </div>
         </nav>
     </header>
@@ -788,58 +858,6 @@
         </div>
     </footer>
 
-    <!-- Modal de Connexion -->
-    <div id="signinModal" class="modal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal('signinModal')">&times;</button>
-            <div class="modal-header">
-                <h2>Connexion</h2>
-                <p>Accédez à votre compte LUXELOC</p>
-            </div>
-            <form onsubmit="handleSignIn(event)">
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" placeholder="votre@email.com" required>
-                </div>
-                <div class="form-group">
-                    <label>Mot de passe</label>
-                    <input type="password" placeholder="••••••••" required>
-                </div>
-                <button type="submit" class="btn-submit">Se connecter</button>
-            </form>
-            <div class="modal-footer">
-                Pas encore de compte ? <a onclick="switchModal('signinModal', 'signupModal')">S'inscrire</a>
-            </div>
-        </div>
-    </div>
-
-    <!-- Modal d'Inscription -->
-    <div id="signupModal" class="modal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal('signupModal')">&times;</button>
-            <div class="modal-header">
-                <h2>Inscription</h2>
-                <p>Créez votre compte LUXELOC</p>
-            </div>
-            <form onsubmit="handleSignUp(event)">
-                <div class="form-group">
-                    <label>Nom complet</label>
-                    <input type="text" placeholder="Votre nom" required>
-                </div>
-                <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" placeholder="votre@email.com" required>
-                </div>
-                <div class="form-group">
-                    <label>Mot de passe</label>
-                    <input type="password" placeholder="••••••••" required>
-                </div>
-                <button type="submit" class="btn-submit">S'inscrire</button>
-            </form>
-            <div class="modal-footer">
-                Déjà inscrit ? <a onclick="switchModal('signupModal', 'signinModal')">Se connecter</a>
-            </div>
-        </div>
     </div>
 
     <!-- Modal de Recherche -->
@@ -1053,6 +1071,18 @@
             searchProperties();
             closeModal('searchModal');
         }
+        const userMenu = document.getElementById("userMenu");
+const userDropdown = document.getElementById("userDropdown");
+
+userMenu.addEventListener("click", (e) => {
+  e.stopPropagation(); // لمنع إغلاقه فوراً عند الضغط داخله
+  userDropdown.style.display = userDropdown.style.display === "block" ? "none" : "block";
+});
+
+// Close dropdown عند الضغط في أي مكان خارج
+document.addEventListener("click", () => {
+  userDropdown.style.display = "none";
+});
     </script>
 </body>
 </html>
