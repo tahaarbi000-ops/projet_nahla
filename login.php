@@ -432,8 +432,8 @@
             </div>
             <div class="nav-right">
             
-                <a href="./signup.html" class="btn-signin">Se connecter</a>
-                <a href="./signup.html" class="btn-signup">S'inscrire</a>
+                <a href="./login.php" class="btn-signin">Se connecter</a>
+                <a href="./signup.php" class="btn-signup">S'inscrire</a>
             </div>
         </nav>
     </header>

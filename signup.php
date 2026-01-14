@@ -462,23 +462,25 @@
                     <label>Nom <span class="required">*</span></label>
                     <input 
                         type="text" 
-                        id="lastName" 
+                        id="firstName" 
                         placeholder="Votre nom" 
                         name="firstName"
                         
                     >
+                <div class="error-message" id="nomError">nom doit etre </div>
+
                 </div>
 
                 <div class="form-group">
                     <label>Prénom <span class="required">*</span></label>
                     <input 
                         type="text" 
-                        id="firstName" 
+                        id="lastName" 
                         placeholder="Votre prénom"
                         name="lastName"
                     >
                 </div>
-                <div class="error-message" id="cinError">Le CIN doit contenir 8 chiffres</div>
+                <div class="error-message" id="prenomError">Le CIN doit contenir 8 chiffres</div>
             </div>
             
             <div class="form-group">
@@ -510,7 +512,6 @@
                     type="password" 
                     id="password" 
                     placeholder="••••••••" 
-                    minlength="8" 
                     name="password"
                     oninput="checkPasswordStrength()"
                 >
@@ -518,6 +519,8 @@
                     <div class="strength-fill" id="strengthBar"></div>
                 </div>
                 <div class="password-strength" id="strengthText">Minimum 8 caractères</div>
+                <div class="error-message" id="passwordError">Les mots de passe est requie</div>
+
             </div>
 
             <div class="form-group">
@@ -529,7 +532,7 @@
                     minlength="8" 
                     oninput="checkPasswordMatch()"
                 >
-                <div class="error-message" id="passwordError">Les mots de passe ne correspondent pas</div>
+                <div class="error-message" id="passwordConError">Les mots de passe ne correspondent pas</div>
             </div>
 
             <div class="checkbox-group">
@@ -548,8 +551,6 @@
         </form>
         <?php 
     if (isset($_POST["btn"])) {
-        echo "ok";
-
     $cin = trim($_POST["cin"]);
     $nom = trim($_POST["lastName"]);
     $prenom = trim($_POST["firstName"]);
@@ -559,19 +560,25 @@
 
     $hashedPassword = password_hash($password, false);
 
-    $sql = "SELECT id FROM users WHERE email =  '$email'";
-    $res = mysqli_query($conn,$sql);
-    if(mysqli_num_rows($res) > 0){
-        echo "email deja existe";
+    $sqlEmail = "SELECT id FROM users WHERE email =  '$email'";
+    $sqlCin = "SELECT id FROM users WHERE cin =  '$cin'";
+    $resEmail = mysqli_query($conn,$sqlEmail);
+    $resCin = mysqli_query($conn,$sqlCin);
+    if(mysqli_num_rows($resEmail) > 0){
+        echo "<p>email deja existe</p>";
     }
-    $sqlInsert = "INSERT INTO users (cin, nom, prenom, email, password, role, num_tel)
-    VALUES ('$cin', '$nom', '$prenom', '$email', '$hashedPassword', 'client', '$phone')";
+    else if(mysqli_num_rows($resCin) > 0){
+        echo "<p>Cin deja existe</p>";
+    }
+    else{
+        $sqlInsert = "INSERT INTO users (cin, nom, prenom, email, password, role, num_tel)
+        VALUES ('$cin', '$nom', '$prenom', '$email', '$hashedPassword', 'client', '$phone')";
 
-    $resIns = mysqli_query($conn,$sqlInsert);
-    if($resIns){
-        header(header: "Location:./login.php");
-    }
-    echo mysqli_error($conn);
+        $resIns = mysqli_query($conn,$sqlInsert);
+        if($resIns){
+            header("Location:./login.php");
+            }
+        }
     }
     
 
@@ -608,6 +615,7 @@
                 strengthText.textContent = 'Mot de passe fort';
                 strengthText.style.color = '#22c55e';
             }
+            return strength
         }
 
         function checkPasswordMatch() {
@@ -649,6 +657,28 @@
                 document.getElementById('cin').classList.add('valid');
             }
 
+            // Validation nom
+            if (!/^[a-zA-Zéè']{3,}$/.test(nom)) {
+                document.getElementById('nomError').style.display = 'block';
+                document.getElementById('firstName').classList.add('error');
+                isValid = false;
+            } else {
+                document.getElementById('nomError').style.display = 'none';
+                document.getElementById('firstName').classList.remove('error');
+                document.getElementById('firstName').classList.add('valid');
+            }
+            // Validation prenom
+
+            if (!/^[a-zA-Zéè']{3,}$/.test(prenom)) {
+                document.getElementById('prenomError').style.display = 'block';
+                document.getElementById('lastName').classList.add('error');
+                isValid = false;
+            } else {
+                document.getElementById('prenomError').style.display = 'none';
+                document.getElementById('lastName').classList.remove('error');
+                document.getElementById('lastName').classList.add('valid');
+            }
+
             // Validation Email
             if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
                 document.getElementById('emailError').style.display = 'block';
@@ -674,15 +704,28 @@
             }
 
             // Validation Mot de passe
-            if (password !== confirmPassword) {
-                document.getElementById('passwordError').style.display = 'block';
+            if (password !== confirmPassword || confirmPassword.length === 0) {
+                console.log(confirmPassword)
+                console.log(password !== confirmPassword)
+                document.getElementById('passwordConError').style.display = 'block';
                 document.getElementById('confirmPassword').classList.add('error');
                 isValid = false;
             } else {
-                document.getElementById('passwordError').style.display = 'none';
+                document.getElementById('passwordConError').style.display = 'none';
                 document.getElementById('confirmPassword').classList.remove('error');
-                document.getElementById('confirmPassword').classList.remove('error');
+                document.getElementById('confirmPassword').classList.add('valid');
 
+            }
+
+            if (password.length === 0 || checkPasswordStrength() < 2) {
+                document.getElementById('passwordError').style.display = 'block';
+                document.getElementById('password').classList.add('error');
+                isValid = false;
+            } else {
+                
+                document.getElementById('passwordError').style.display = 'none';
+                document.getElementById('password').classList.remove('error');
+                document.getElementById('password').classList.add('valid');
             }
 
             return isValid;
