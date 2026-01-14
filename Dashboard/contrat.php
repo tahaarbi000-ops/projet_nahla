@@ -80,11 +80,11 @@ if(!isset($_SESSION["info"])){
 
 <label>Rechercher un client</label>
 <input type="text" id="clientSearch" a placeholder="Tapez le nom..." autocomplete="off">
-<input type="hidden" id="clientId"/>
+<input type="hidden" id="clientId" name="clientId"/>
 <div id="clientResults" class="results"></div>
 
     <label>location</label>
-    <select name="etat" id="location" required>
+    <select name="location" id="location" required>
         <option value="">-- choisir --</option>
     </select>
 
@@ -93,8 +93,22 @@ if(!isset($_SESSION["info"])){
     </label>
     <input type="text" name="duree" required>
 
+    <button name="btn" type="submit">Créez</button>
 
-    <button type="submit">Créez</button>
+    <?php
+    if(isset($_POST["btn"])){
+        $location = $_POST["location"];
+        $client_id = $_POST["clientId"];
+        $dure = $_POST["duree"];
+        $sql = "INSERT INTO contrat VALUES(NULL,now(),'$dure',$client_id,$location,'en cours')";
+        $sqlLoc = "UPDATE location SET etat = 'occupé' WHERE id = $location";
+        $res = mysqli_query($conn,$sql);
+        $resLoc = mysqli_query($conn,$sqlLoc);
+        header("location:contrat.php");
+    }
+    
+    ?>
+
 
 </form>
 </main>

@@ -8,9 +8,11 @@ if($query != '') {
     $queryEscaped = mysqli_real_escape_string($conn, $query);
 
     // Search admins by first or last name
-    $sql = "SELECT description, type,adresse,prix,classification
+    $sql = "SELECT description, type,adresse,prix,classification,id
             FROM location 
-            WHERE prop_id = $query ";
+            WHERE prop_id = $query
+            AND etat = 'libre'
+             ";
 
     $result = mysqli_query($conn, $sql);
 

@@ -15,6 +15,27 @@ document.addEventListener("click", function(e) {
 
 const adminInput = document.getElementById('adminSearch');
 const resultsBox = document.getElementById('adminResults');
+const locationSelect = document.getElementById('location');
+
+
+
+function loadLocationsByOwner(ownerId) {
+    if (!ownerId) return;
+
+    fetch('search_location.php?q=' + encodeURIComponent(ownerId))
+        .then(res => res.json())
+        .then(data => {
+            locationSelect.innerHTML = '<option value="">-- choisir --</option>';
+
+            data.forEach(loc => {
+                const option = document.createElement('option');
+                option.value = loc.id;
+                option.textContent = loc.description;
+                locationSelect.appendChild(option);
+            });
+        });
+}
+
 
 adminInput.addEventListener('input', function() {
     const query = this.value.trim();
@@ -47,10 +68,14 @@ adminInput.addEventListener('input', function() {
 
                 // Optional: click to fill input
                 div.addEventListener('click', () => {
-                    adminInput.value = admin.prenom + ' ' + admin.nom;
-                    resultsBox.innerHTML = '';
-                    document.querySelector("#proprietaireId").value = admin.id;
-                });
+                adminInput.value = admin.prenom + ' ' + admin.nom;
+                resultsBox.innerHTML = '';
+
+                proprietaireId.value = admin.id;
+
+                loadLocationsByOwner(admin.id); // ✅ LOAD IMMEDIATELY
+            });
+
             });
         });
 });
@@ -65,7 +90,6 @@ clientInput.addEventListener('input', function() {
         ClientResultsBox.innerHTML = '';
         return;
     }
-console.log(query)
     fetch('search_client.php?q=' + encodeURIComponent(query))
         .then(res => res.json())
         .then(data => {
