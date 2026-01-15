@@ -474,10 +474,7 @@
                 S'inscrire
             </button>
     </div>
-    <div class="footer-text">
-            Vous avez déjà un compte ? <a href="#" onclick="alert('Redirection vers la page de connexion')">Se connecter</a>
-        </div>
-        <?php
+    <?php
         if (isset($_POST["btn"])) {
     $email = trim($_POST["email"]);
     $password = $_POST["password"];
@@ -488,11 +485,16 @@
         $userData = mysqli_fetch_assoc($res);
         $passwordCheck = password_verify($password,$userData["password"]);
         if($passwordCheck){
-            $_SESSION["info"] = ["email" => $userData["email"],"role" => $userData["email"] ];
-            echo "ok";
+            $_SESSION["info"] = ["email" => $userData["email"],"role" => $userData["role"] ];
+            if($userData["role"] == "client"){
+                header("location:./index");
+                }
+                else{
+                header("location:./dashboard");
+                }
         }
         else{
-            echo "not ok";
+            echo "<p style='color:red'>Email ou mot de passe incorrect</p>";
         }
     }
 
@@ -501,6 +503,10 @@
 
         
         ?>
+
+    <div class="footer-text">
+            Vous avez déjà un compte ? <a href="#" onclick="alert('Redirection vers la page de connexion')">Se connecter</a>
+        </div>
         </form>
 
 

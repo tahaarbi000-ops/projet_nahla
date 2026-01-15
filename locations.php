@@ -62,6 +62,7 @@
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
+
         nav {
             max-width: 1400px;
             margin: 0 auto;
@@ -89,6 +90,112 @@
             font-weight: 900;
             color: #2563eb;
         }
+        /* FILTER BUTTON */
+.filter-toggle {
+    position: fixed;
+    left: 20px;
+    top: 104px;
+    transform: translateY(-50%);
+    background: #2563eb;
+    color: white;
+    border: none;
+    padding: 0.8rem 1.2rem;
+    border-radius: 30px;
+    cursor: pointer;
+    font-weight: 600;
+    z-index: 1200;
+}
+
+/* OVERLAY */
+.filter-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.6);
+    backdrop-filter: blur(5px);
+    display: none;
+    z-index: 1100;
+}
+
+/* DRAWER */
+.filter-drawer {
+    position: fixed;
+    top: 0;
+    left: -350px;
+    width: 320px;
+    height: 100%;
+    background: #0f172a;
+    padding: 2rem;
+    z-index: 1200;
+    transition: left 0.4s ease;
+    overflow-y: auto;
+}
+
+/* ACTIVE */
+.filter-drawer.active {
+    left: 0;
+}
+
+.filter-overlay.active {
+    display: block;
+}
+
+/* HEADER */
+.filter-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+}
+
+.filter-header button {
+    background: transparent;
+    border: none;
+    color: white;
+    font-size: 1.3rem;
+    cursor: pointer;
+}
+
+/* FORM */
+.filter-drawer label {
+    display: block;
+    margin-top: 1rem;
+    margin-bottom: 0.4rem;
+    color: rgba(255,255,255,0.8);
+}
+
+.filter-drawer input,
+.filter-drawer select {
+    width: 100%;
+    padding: 0.7rem;
+    border-radius: 10px;
+    border: 1px solid rgba(255,255,255,0.15);
+    background: rgba(255,255,255,0.08);
+    color: white;
+}
+
+.filter-drawer select option {
+    background: #0f172a;
+}
+
+.btn-filter {
+    width: 100%;
+    margin-top: 1.5rem;
+    padding: 0.8rem;
+    background: #2563eb;
+    border: none;
+    border-radius: 10px;
+    color: white;
+    font-weight: 600;
+}
+
+.btn-reset {
+    display: block;
+    text-align: center;
+    margin-top: 0.7rem;
+    color: #94a3b8;
+    text-decoration: none;
+}
+
 
         nav ul {
             display: flex;
@@ -308,6 +415,10 @@
             gap: 2rem;
         }
 
+        .property-grid a{
+            text-decoration: none;
+        }
+
         .property-card {
             background: rgba(255, 255, 255, 0.05);
             backdrop-filter: blur(20px);
@@ -343,7 +454,7 @@
 
         .property-image {
             width: 100%;
-            height: 250px;
+            height: 350px;
             background: #2563eb;
             display: flex;
             align-items: center;
@@ -352,6 +463,17 @@
             position: relative;
             overflow: hidden;
         }
+
+        .property-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;   /* fill container without distortion */
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
+
 
         .property-image::after {
             content: '';
@@ -760,7 +882,7 @@
                     <span class='user-name'>👤 " . $user["nom"] . " " . $user["prenom"] . " </span>
                     <div class='dropdown' id='userDropdown'>
                         <a href='./profile.php'>⚙️ Paramètres</a>
-                        <a href='./dashboard/me-reservations.php'>📊 Mon espace</a>
+                        <a href='./client/dashboard.php'>📊 Mon espace</a>
                         <a href='?logout' class='logout'>🚪 Déconnexion</a>
                     </div>
                 </div>
@@ -777,337 +899,143 @@
             </div>
         </nav>
     </header>
+    <button id="openFilter" class="filter-toggle">
+    🔍 Filtres
+</button>
 
-    <section class="hero" id="accueil">
-        <div class="hero-bg"></div>
-        <div class="hero-content">
-            <h1>Vivez l'Excellence</h1>
-            <p>Découvrez les plus belles propriétés de prestige disponibles à la location</p>
-            <div class="search-container">
-                <div class="search-box">
-                    <form action="locations.php" method="GET" class="search-box">
-            <select name="gouvernorat" id="gouvernorat">
-            <option value="">📍 Toutes les localisations</option>
+
+    <!-- FILTER OVERLAY -->
+<div class="filter-overlay" id="filterOverlay"></div>
+
+<!-- FILTER SIDEBAR -->
+<aside class="filter-drawer" id="filterDrawer">
+    <div class="filter-header">
+        <h3>🔍 Filtres</h3>
+        <button id="closeFilter">✖</button>
+    </div>
+
+    <form method="GET" id="filterForm">
+        <label>Gouvernorat</label>
+        <select name="gouvernorat">
+            <option value="">Tous</option>
             <option value="Tunis">Tunis</option>
-            <option value="Ariana">Ariana</option>
-            <option value="Ben Arous">Ben Arous</option>
-            <option value="Manouba">Manouba</option>
-
-            <option value="Nabeul">Nabeul</option>
-            <option value="Zaghouan">Zaghouan</option>
-            <option value="Bizerte">Bizerte</option>
-
-            <option value="Béja">Béja</option>
-            <option value="Jendouba">Jendouba</option>
-            <option value="Le Kef">Le Kef</option>
-            <option value="Siliana">Siliana</option>
-
             <option value="Sousse">Sousse</option>
             <option value="Monastir">Monastir</option>
-            <option value="Mahdia">Mahdia</option>
-
-            <option value="Kairouan">Kairouan</option>
-            <option value="Kasserine">Kasserine</option>
-            <option value="Sidi Bouzid">Sidi Bouzid</option>
-
             <option value="Sfax">Sfax</option>
-
-            <option value="Gabès">Gabès</option>
-            <option value="Médenine">Médenine</option>
-            <option value="Tataouine">Tataouine</option>
-
-            <option value="Gafsa">Gafsa</option>
-            <option value="Tozeur">Tozeur</option>
-            <option value="Kébili">Kébili</option>
         </select>
-                    
-                    <select name="type">
-                        <option value="">Type de bien</option>
-                        <option value="villa">Villa de Luxe</option>
-                        <option value="penthouse">Penthouse</option>
-                        <option value="maison">Maison Moderne</option>
-                        <option value="chateau">Château</option>
-                    </select>
 
-                    <button type="submit" class="btn-primary">Rechercher</button>
-                </form>
+        <label>Type</label>
+        <select name="type">
+            <option value="">Tous</option>
+            <option value="villa">Villa</option>
+            <option value="appartement">Appartement</option>
+            <option value="studio">Studio</option>
+        </select>
 
-                </div>
-            </div>
-        </div>
-    </section>
+        <label>Prix min</label>
+        <input type="number" name="min">
 
-    <section class="stats">
-        <div class="stat-card">
-            <div class="stat-number">500+</div>
-            <div class="stat-label">Propriétés Premium</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-number">98%</div>
-            <div class="stat-label">Clients Satisfaits</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-number">15+</div>
-            <div class="stat-label">Années d'Expérience</div>
-        </div>
-        <div class="stat-card">
-            <div class="stat-number">24/7</div>
-            <div class="stat-label">Service Client</div>
-        </div>
-    </section>
+        <label>Prix max</label>
+        <input type="number" name="max">
+
+        <button type="submit" class="btn-filter">Appliquer</button>
+        <a href="?" class="btn-reset">Réinitialiser</a>
+    </form>
+</aside>
+
 
     <section class="properties" id="proprietes">
-        <div class="section-header">
-            <h2>Collections Exclusives</h2>
-            <p>Une sélection rigoureuse des meilleures propriétés</p>
-        </div>
-        <div class="property-grid" id="propertyGrid"></div>
-    </section>
-
-    <footer id="contact">
-        <div class="footer-content">
-            <div class="footer-section">
-                <h4>LUXELOC</h4>
-                <p>Votre partenaire de confiance pour la location de propriétés d'exception.</p>
-            </div>
-            <div class="footer-section">
-                <h4>Navigation</h4>
-                <a href="#accueil">Accueil</a>
-                <a href="#proprietes">Nos Propriétés</a>
-                <a href="#services">Services</a>
-                <a href="#contact">Contact</a>
-            </div>
-            <div class="footer-section">
-                <h4>Contact</h4>
-                <p>📧 contact@luxeloc.com</p>
-                <p>📱 +216 70 XXX XXX</p>
-                <p>📍 Tunis, Tunisie</p>
-            </div>
-            <div class="footer-section">
-                <h4>Suivez-nous</h4>
-                <a href="#">Facebook</a>
-                <a href="#">Instagram</a>
-                <a href="#">LinkedIn</a>
-            </div>
-        </div>
-        <div class="footer-bottom">
-            <p>&copy; 2026 LUXELOC. Tous droits réservés.</p>
-        </div>
-    </footer>
-
-    </div>
-
-    <!-- Modal de Recherche -->
-    <div id="searchModal" class="modal">
-        <div class="modal-content search-modal-content">
-            <button class="modal-close" onclick="closeModal('searchModal')">&times;</button>
-            <div class="modal-header">
-                <h2>Recherche Avancée</h2>
-                <p>Trouvez votre propriété idéale</p>
-            </div>
-            <form class="search-form" onsubmit="handleSearch(event)">
-                <div class="form-group">
-                    <label>Localisation</label>
-                    <input type="text" id="modalLocation" placeholder="Ville ou région">
-                </div>
-                <div class="form-group">
-                    <label>Type de bien</label>
-                    <select id="modalType">
-                        <option value="">Tous les types</option>
-                        <option value="villa">Villa de Luxe</option>
-                        <option value="penthouse">Penthouse</option>
-                        <option value="maison">Maison Moderne</option>
-                        <option value="chateau">Château</option>
-                    </select>
-                </div>
-                <div class="form-group">
-                    <label>Budget maximum (DT/mois)</label>
-                    <input type="number" id="modalBudget" placeholder="5000">
-                </div>
-                <button type="submit" class="btn-submit">🔍 Rechercher</button>
-            </form>
-        </div>
-    </div>
-
-    <script>
-        const properties = [
-            { 
-                id: 1, 
-                title: "Villa Méditerranéenne", 
-                location: "Sidi Bou Said", 
-                price: "5500 DT", 
-                rooms: "6", 
-                surface: "450m²",
-                icon: "🏖️",
-                tag: "Vue Mer"
-            },
-            { 
-                id: 2, 
-                title: "Penthouse Urbain", 
-                location: "Les Berges du Lac", 
-                price: "4200 DT", 
-                rooms: "4", 
-                surface: "320m²",
-                icon: "🌆",
-                tag: "Luxe"
-            },
-            { 
-                id: 3, 
-                title: "Maison d'Architecte", 
-                location: "La Marsa", 
-                price: "6000 DT", 
-                rooms: "7", 
-                surface: "520m²",
-                icon: "🎨",
-                tag: "Design"
-            },
-            { 
-                id: 4, 
-                title: "Villa Avec Piscine", 
-                location: "Gammarth", 
-                price: "4800 DT", 
-                rooms: "5", 
-                surface: "400m²",
-                icon: "🏊",
-                tag: "Piscine"
-            },
-            { 
-                id: 5, 
-                title: "Résidence Moderne", 
-                location: "Carthage", 
-                price: "3900 DT", 
-                rooms: "4", 
-                surface: "280m²",
-                icon: "🏛️",
-                tag: "Prestige"
-            },
-            { 
-                id: 6, 
-                title: "Villa Contemporaine", 
-                location: "Sousse", 
-                price: "3500 DT", 
-                rooms: "5", 
-                surface: "380m²",
-                icon: "✨",
-                tag: "Neuf"
-            }
-        ];
-
-        function displayProperties(propertiesToShow = properties) {
-            const grid = document.getElementById('propertyGrid');
-            grid.innerHTML = '';
+        <div class="property-grid" id="propertyGrid">
+            <?php
             
-            propertiesToShow.forEach((property, index) => {
-                const card = document.createElement('div');
-                card.className = 'property-card';
-                card.style.animationDelay = `${index * 0.1}s`;
-                card.innerHTML = `
-                    <div class="property-image">${property.icon}</div>
-                    <div class="property-info">
-                        <span class="property-tag">${property.tag}</span>
-                        <h3>${property.title}</h3>
-                        <div class="property-details">
-                            <span>📍 ${property.location}</span>
-                            <span>🛏️ ${property.rooms} ch</span>
-                            <span>📐 ${property.surface}</span>
-                        </div>
-                        <p class="price">${property.price}/mois</p>
-                    </div>
-                `;
-                card.onclick = () => {
-                    alert(`✨ ${property.title}\n\n📍 ${property.location}\n🛏️ ${property.rooms} chambres\n📐 ${property.surface}\n💰 ${property.price}/mois\n\nContactez-nous pour plus d'informations !`);
-                };
-                grid.appendChild(card);
-            });
-        }
+           $sql = "
+SELECT 
+    l.id,
+    l.type,
+    l.adresse,
+    l.gouvernorat,
+    l.prix,
+    l.classification,
+    MIN(i.img_url) AS img_url,
+    l.description
+FROM location l
+JOIN images i ON l.id = i.location_id
+WHERE 1=1
+";
 
-        function searchProperties() {
-            const location = document.getElementById('location').value.toLowerCase();
-            const type = document.getElementById('type').value.toLowerCase();
-            const budget = document.getElementById('budget').value;
+/* ---- Filters ---- */
 
-            let filtered = properties;
+if (!empty($_GET["gouvernorat"])) {
+    $gouv = mysqli_real_escape_string($conn, $_GET["gouvernorat"]);
+    $sql .= " AND l.gouvernorat = '$gouv'";
+}
 
-            if (location) {
-                filtered = filtered.filter(p => p.location.toLowerCase().includes(location));
-            }
+if (!empty($_GET["type"])) {
+    $type = mysqli_real_escape_string($conn, $_GET["type"]);
+    $sql .= " AND l.type = '$type'";
+}
 
-            if (type) {
-                filtered = filtered.filter(p => p.title.toLowerCase().includes(type));
-            }
+if (!empty($_GET["min"])) {
+    $min = (int) $_GET["min"];
+    $sql .= " AND l.prix >= $min";
+}
 
-            if (budget) {
-                filtered = filtered.filter(p => {
-                    const price = parseInt(p.price.replace(/\D/g, ''));
-                    return price <= parseInt(budget);
-                });
-            }
+if (!empty($_GET["max"])) {
+    $max = (int) $_GET["max"];
+    $sql .= " AND l.prix <= $max";
+}
 
-            displayProperties(filtered);
-            document.getElementById('proprietes').scrollIntoView({ behavior: 'smooth' });
-        }
+/* ---- Group ---- */
+$sql .= " GROUP BY l.id";
 
-        displayProperties();
+            $res = mysqli_query($conn, $sql);
 
-        // Fonctions pour les modals
-        function openSignInModal() {
-            document.getElementById('signinModal').classList.add('active');
-        }
+if (mysqli_num_rows($res) > 0) {
 
-        function openSignUpModal() {
-            document.getElementById('signupModal').classList.add('active');
-        }
+    while ($ligne = mysqli_fetch_assoc($res)) {
+        echo "
+        <a href='location.php?id={$ligne['id']}' class='property-card'>
+            <div class='property-image'>
+                <img src='{$ligne['img_url']}' alt='image'>
+            </div>
+            <div class='property-info'>
+                <span class='property-tag'>{$ligne['type']}</span>
+                <h3>{$ligne['adresse']}</h3>
+                <div class='property-details'>
+                    <span>📍 {$ligne['gouvernorat']}</span>
+                </div>
+                <p class='price'>{$ligne['prix']} TND / mois</p>
+            </div>
+        </a>
+        ";
+    }
 
-        function openSearchModal() {
-            document.getElementById('searchModal').classList.add('active');
-        }
+} else {
 
-        function closeModal(modalId) {
-            document.getElementById(modalId).classList.remove('active');
-        }
+    echo "
+    <div style='
+        grid-column: 1 / -1;
+        text-align: center;
+        padding: 4rem 2rem;
+        color: rgba(255,255,255,0.7);
+        font-size: 1.4rem;
+    '>
+        <strong>Aucun résultat trouvé</strong><br>
+        <span style='font-size:1rem; opacity:.7;'>
+            Essayez de modifier vos critères de recherche
+        </span>
+    </div>
+    ";
+}
 
-        function switchModal(currentModal, targetModal) {
-            closeModal(currentModal);
-            document.getElementById(targetModal).classList.add('active');
-        }
 
-        // Fermer le modal en cliquant en dehors
-        window.onclick = function(event) {
-            if (event.target.classList.contains('modal')) {
-                event.target.classList.remove('active');
-            }
-        }
 
-        // Gestion de la connexion
-        function handleSignIn(event) {
-            event.preventDefault();
-            alert('✅ Connexion réussie !\nBienvenue sur LUXELOC');
-            closeModal('signinModal');
-        }
+            ?>
+    
+</a>
+    </section>
+    <script>
 
-        // Gestion de l'inscription
-        function handleSignUp(event) {
-            event.preventDefault();
-            alert('✅ Inscription réussie !\nBienvenue sur LUXELOC');
-            closeModal('signupModal');
-        }
-
-        // Gestion de la recherche depuis le modal
-        function handleSearch(event) {
-            event.preventDefault();
-            const location = document.getElementById('modalLocation').value;
-            const type = document.getElementById('modalType').value;
-            const budget = document.getElementById('modalBudget').value;
-
-            // Remplir les champs de recherche principaux
-            document.getElementById('location').value = location;
-            document.getElementById('type').value = type;
-            document.getElementById('budget').value = budget;
-
-            // Effectuer la recherche
-            searchProperties();
-            closeModal('searchModal');
-        }
         const userMenu = document.getElementById("userMenu");
 const userDropdown = document.getElementById("userDropdown");
 
@@ -1120,6 +1048,37 @@ userMenu.addEventListener("click", (e) => {
 document.addEventListener("click", () => {
   userDropdown.style.display = "none";
 });
+
+const openBtn = document.getElementById("openFilter");
+const closeBtn = document.getElementById("closeFilter");
+const drawer = document.getElementById("filterDrawer");
+const overlay = document.getElementById("filterOverlay");
+
+openBtn.onclick = () => {
+    drawer.classList.add("active");
+    overlay.classList.add("active");
+};
+
+closeBtn.onclick = closeFilter;
+overlay.onclick = closeFilter;
+
+function closeFilter() {
+    drawer.classList.remove("active");
+    overlay.classList.remove("active");
+}
+document.getElementById("filterForm").addEventListener("submit", function () {
+    const fields = this.querySelectorAll("input, select");
+
+    fields.forEach(field => {
+        if (field.value.trim() === "") {
+            field.removeAttribute("name");
+        }
+    });
+});
+
+
+
+
     </script>
 </body>
 </html>

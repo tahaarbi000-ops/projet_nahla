@@ -73,7 +73,7 @@ if(!isset($_SESSION["info"])){
 
 <form method="POST" enctype="multipart/form-data" class="property-form">
 
-<label>Rechercher un admin</label>
+<label>Rechercher un propriétaire</label>
 <input type="text" id="adminSearch" a placeholder="Tapez le nom..." autocomplete="off">
 <input type="hidden" id="proprietaireId"/>
 <div id="adminResults" class="results"></div>

@@ -43,6 +43,7 @@ $html = "
 body { font-family: DejaVu Sans; }
 h2 { text-align: center; }
 p { margin: 6px 0; }
+.sign { display:flex;justify-content:space-between; }
 </style>
 
 <h2>Contrat de Location</h2>
@@ -61,13 +62,22 @@ L’ensemble de ces dispositions étant d’ordre public, elles s’imposent aux
 
 <p><strong>Client :</strong> {$data['prenom_client']} {$data['nom_client']}</p>
 <p><strong>Propriétaire :</strong> {$data['prenom_prop']} {$data['nom_prop']}</p>
-<p><strong>adresse :</strong> {$data['adresse']} {$data['nom_prop']}</p>
+<p><strong>adresse :</strong> {$data['adresse']}</p>
 
 <br><br>
+<table width='100%' style='margin-top:40px;'>
+    <tr>
+        <td width='50%' align='left'>
+            Signature client :<br><br>
+            ________________________
+        </td>
+        <td width='50%'' align='right'>
+            Signature propriétaire :<br><br>
+            ________________________
+        </td>
+    </tr>
+</table>
 
-<p>Signature client : ________________________</p>
-<br>
-<p>Signature propriétaire : ________________________</p>
 ";
 
 $dompdf = new Dompdf();
