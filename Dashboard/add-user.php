@@ -101,7 +101,7 @@ if(!isset($_SESSION["info"])){
                     ";
                 }
             ?>
-            <li><a href=".parametres.php">Paramètres</a></li>
+            <li><a href="./parametres.php">Paramètres</a></li>
         </ul>
     </aside>
         <main class="content">
@@ -143,6 +143,8 @@ if(!isset($_SESSION["info"])){
 
 </form>
 </main>
+<script src="./main.js"></script>
+
     <script>
 function togglePassword() {
     const role = document.querySelector("#role").value;
