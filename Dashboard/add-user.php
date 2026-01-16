@@ -87,7 +87,7 @@ if(!isset($_SESSION["info"])){
                 else{
                     echo "<li><a href='./index.php'>Accueil</a></li>";
                     if($info["role"] == "admin"){
-                        echo "<li><a href='./users.php'>utilisteurs</a></li>";
+                        echo "<li><a href='./users.php'>utilisateurs</a></li>";
                     }
                     else{
                         echo "
@@ -105,7 +105,7 @@ if(!isset($_SESSION["info"])){
         </ul>
     </aside>
         <main class="content">
-<h2>Ajouter une <?php if($role == "admin") : echo "utlisteurs";else : echo "propriétaire"; endif ;?></h2>
+<h2>Ajouter une <?php if($role == "admin") : echo "utilisateurs";else : echo "propriétaire"; endif ;?></h2>
 
 <form method="POST" enctype="multipart/form-data" class="property-form">
 
