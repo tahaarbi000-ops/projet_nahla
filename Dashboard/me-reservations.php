@@ -130,8 +130,13 @@ if(!isset($_SESSION["info"])){
                     ";
                 }
             ?>
-            <li><a href="#">Paramètres</a></li>
-        </ul>
+<li class="has-submenu">
+        <a href="#" onclick="toggleSettings(event)">Paramètres ▾</a>
+        <ul class="submenu" id="settingsMenu">
+        <li><a href="./paramètres/index.php">Informations</a></li>
+        <li><a href="./paramètres/mot_passe.php">Mot de passe</a></li>
+    </ul>
+</li>        </ul>
     </aside>
         <main class="content">
             <div class="head">

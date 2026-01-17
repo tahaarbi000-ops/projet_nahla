@@ -121,3 +121,8 @@ clientInput.addEventListener('input', function() {
             });
         });
 });
+
+function toggleSettings(e){
+    e.preventDefault();
+    document.getElementById("settingsMenu").classList.toggle("show");
+}

@@ -10,7 +10,23 @@ if(!isset($_SESSION["info"])){
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Ajouter une propriété</title>
+    <style>
+        .add-term-btn {
+    margin: 10px 0 20px;
+    padding: 8px 12px;
+    background: #2c7be5;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.add-term-btn:hover {
+    background: #1a5dcc;
+}
+
+    </style>
+    <title>Ajouter une contrat</title>
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
@@ -46,27 +62,32 @@ if(!isset($_SESSION["info"])){
         <ul>
             <?php
                 if($info["role"] == "client"){
-                    echo "<li><a href='#'>Réservations</a></li>";
+                    echo "<li><a href='./me-reservations.php'>Réservations</a></li>";
                 }
                 else{
-                    echo "<li><a href='#'>Accueil</a></li>";
+                    echo "<li><a href='./index.php'>Accueil</a></li>";
                     if($info["role"] == "admin"){
-                        echo "<li><a href='#'>utilisteurs</a></li>";
+                        echo "<li><a href='./users.php'>Utilisteurs</a></li>";
                     }
                     else{
                         echo "
-                        <li><a href='#'>proprietaires</a></li>
+                        <li><a href='./users.php'>Proprietaires</a></li>
                         ";
                     }
                     echo "
-                        <li><a href='#'>Réservations</a></li>
-                        <li><a href='#'>Contrat</a></li>
+                        <li><a href='./reservations.php'>Réservations</a></li>
+                        <li><a href='./contrats.php'>Contrat</a></li>
                         <li><a href='./localion.php'>Location</a></li>
                     ";
                 }
             ?>
-            <li><a href="#">Paramètres</a></li>
-        </ul>
+<li class="has-submenu">
+        <a href="#" onclick="toggleSettings(event)">Paramètres ▾</a>
+        <ul class="submenu" id="settingsMenu">
+        <li><a href="./paramètres/index.php">Informations</a></li>
+        <li><a href="./paramètres/mot_passe.php">Mot de passe</a></li>
+    </ul>
+</li>        </ul>
     </aside>
         <main class="content">
 <h2>Créez contrat</h2>
@@ -93,6 +114,15 @@ if(!isset($_SESSION["info"])){
     </label>
     <input type="text" name="duree" required>
 
+    <label>Termes du contrat</label>
+
+<div id="termsContainer">
+    <input type="text" name="terms[]" placeholder="Terme 1" required>
+</div>
+
+<button type="button" class="add-term-btn" onclick="addTerm()">+ Ajouter un terme</button>
+
+
     <button name="btn" type="submit">Créez</button>
 
     <?php
@@ -100,11 +130,21 @@ if(!isset($_SESSION["info"])){
         $location = $_POST["location"];
         $client_id = $_POST["clientId"];
         $dure = $_POST["duree"];
+            $terms = $_POST["terms"]; // array
+
         $sql = "INSERT INTO contrat VALUES(NULL,now(),'$dure',$client_id,$location,'en cours')";
-        $sqlLoc = "UPDATE location SET etat = 'occupé' WHERE id = $location";
         $res = mysqli_query($conn,$sql);
+        $contrat_id = mysqli_insert_id($conn);
+
+    foreach($terms as $term){
+        echo $term;
+        $term = mysqli_real_escape_string($conn, $term);
+        mysqli_query($conn, "INSERT INTO terms VALUES(NULL, $contrat_id, '$term')");
+    }
+
+        $sqlLoc = "UPDATE location SET etat = 'occupé' WHERE id = $location";
         $resLoc = mysqli_query($conn,$sqlLoc);
-        header("location:contrat.php");
+        header("location:contrats.php");
     }
     
     ?>
@@ -113,5 +153,24 @@ if(!isset($_SESSION["info"])){
 </form>
 </main>
 <script src="./main.js"></script>
+<script>
+let termCount = 1;
+
+function addTerm() {
+    termCount++;
+
+    const container = document.getElementById("termsContainer");
+
+    const input = document.createElement("input");
+    input.type = "text";
+    input.name = "terms[]";
+    input.placeholder = "Terme " + termCount;
+    input.style.marginTop = "10px";
+    input.required = true;
+
+    container.appendChild(input);
+}
+
+</script>
 </body>
 </html>

@@ -741,9 +741,8 @@
             <div class="nav-left">
                 <div class="logo">LUXELOC</div>
                 <ul>
-                    <li><a href="#accueil">Accueil</a></li>
-                    <li><a href="#proprietes">Propriétés</a></li>
-                    <li><a href="#services">Services</a></li>
+                    <li><a href="./index.php">Accueil</a></li>
+                    <li><a href="./locations.php">Locations</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>
             </div>
@@ -752,16 +751,26 @@
             if(isset($_SESSION["info"])){
                 $info = $_SESSION["info"];
                 $email = $info["email"];
+                $role = $info["role"];
                 $sql = "SELECT nom,prenom,role FROM users WHERE email = '$email'";
                 $response = mysqli_query($conn,$sql);
                 $user = mysqli_fetch_assoc($response);
+
+                $menuLink = "";
+
+                if ($role == "client") {
+                    $menuLink = "<a href='./dashboard/me-reservations.php'>Mon reservations</a>";
+                } else {
+                    $menuLink = "<a href='./dashboard/index.php'>Tableau de bord</a>";
+                }
+
                 echo "
                     <div class='user-menu' id='userMenu'>
-                    <span class='user-name'>👤 " . $user["nom"] . " " . $user["prenom"] . " </span>
+                    <span class='user-name'>" . $user["nom"] . " " . $user["prenom"] . " </span>
                     <div class='dropdown' id='userDropdown'>
-                        <a href='./profile.php'>⚙️ Paramètres</a>
-                        <a href='./dashboard/me-reservations.php'>📊 Mon espace</a>
-                        <a href='?logout' class='logout'>🚪 Déconnexion</a>
+                        <a href='./dashboard/paramètres/index.php'>Paramètres</a>
+                        " . $menuLink . "
+                        <a href='?logout' class='logout'>Déconnexion</a>
                     </div>
                 </div>
                 ";

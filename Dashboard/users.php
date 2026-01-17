@@ -26,7 +26,8 @@ if(!isset($_SESSION["info"])){
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>Ajouter une propriété</title>
+    <title>Listes des locations
+</title>
     <link rel="stylesheet" href="style.css">
     <style>
         .head{
@@ -65,13 +66,22 @@ if(!isset($_SESSION["info"])){
             text-decoration: none;
             border-radius: 4px;
         }
+        .disabled{
+    pointer-events: none;
+    opacity: 0.5;
+    cursor: not-allowed;
+}
     </style>
 </head>
 <body>
 <!-- TOPBAR -->
 <header class="topbar">
     <div class="top-left">
-        <h2>LUXELOC</h2>
+        <a href="../index.php">
+            <a href="../index.php">
+                <h2>LUXELOC</h2>
+            </a>
+        </a>
     </div>
 
     <div class="top-right">
@@ -103,32 +113,37 @@ if(!isset($_SESSION["info"])){
                     echo "<li><a href='./me-reservations'>Réservations</a></li>";
                 }
                 else{
-                    echo "<li><a href='#'>Accueil</a></li>";
+                    echo "<li><a href='./index.php'>Accueil</a></li>";
                     if($info["role"] == "admin"){
-                        echo "<li><a href='./users'>utilisteurs</a></li>";
+                        echo "<li><a href='./users'>Utilisateurs</a></li>";
                     }
                     else{
                         echo "
-                        <li><a href='./users'>proprietaires</a></li>
+                        <li><a href='./users'>propriétaire</a></li>
                         ";
                     }
                     echo "
-                        <li><a href='./reservations'>Réservations</a></li>
-                        <li><a href='./listContrat.php'>Contrat</a></li>
-                        <li><a href='./localion.php'>Location</a></li>
+                        <li><a href='./reservations.php'>Réservations</a></li>
+                        <li><a href='./contrats.php.php'>Contrat</a></li>
+                        <li><a href='./locations.php'>Location</a></li>
                     ";
                 }
             ?>
-            <li><a href="#">Paramètres</a></li>
-        </ul>
+<li class="has-submenu">
+        <a href="#" onclick="toggleSettings(event)">Paramètres ▾</a>
+        <ul class="submenu" id="settingsMenu">
+        <li><a href="./paramètres/index.php">Informations</a></li>
+        <li><a href="./paramètres/mot_passe.php">Mot de passe</a></li>
+    </ul>
+</li>        </ul>
     </aside>
         <main class="content">
             <div class="head">
-                <h2>Liste des <?php if($role == "admin") : echo "utiliteurs" ; else : echo "prop" ; endif; ?></h2>
+                <h2>Liste des <?php if($role == "admin") : echo "Utilisateurs" ; else : echo "propriétaire" ; endif; ?></h2>
                 <div class="btn-add">
                     <a href="./add-user.php">Ajoute
                         <?php
-                        if($role == "admin") : echo "utiliteur" ; else : echo "prop" ; endif; ?>
+                        if($role == "admin") : echo "Utilisateurs" ; else : echo "propriétaire" ; endif; ?>
                     </a>
                 </div>
             </div>
@@ -144,6 +159,7 @@ if(!isset($_SESSION["info"])){
             <?php if ($role == "admin"): ?>
                 <th>Role</th>
             <?php endif; ?>
+            <th>historique</th>
             <th>action</th>
         </tr>
     </thead>
@@ -155,13 +171,28 @@ if(!isset($_SESSION["info"])){
                     <td><?= $row['cin'] ?></td>
                     <td><?= $row['prenom'] . ' ' . $row['nom'] ?></td>
                     <td><?= $row['email'] ?></td>
-                    <?php if ($role == "admin"): ?>
-                    <th><?=  $row['role'] ?></th>
-                    <?php endif; ?>
                     <td><?= $row['num_tel'] ?></td>
+                    <?php if ($role == "admin"): ?>
+                        <?php endif; ?>
+                        <th><?=  $row['role'] ?></th>
+                        <td>
+                            <?php if ( $row['role'] == "proprietaire" ): ?>
+                            <a style="background:green;" class="btn" href="./historique.php?id=<?= $row['id'] ?>"  ?>
+                            voir
+                        </a>
+                        <?php else : ?>
+                        <a style="background:green;" class="btn disabled" href="#"  ?>
+                            voir
+                        </a>
+                        <?php endif; ?>
+                        </td>
                     <td>
                         <?php if ($userInfo["email"] != $row['email']): ?>
                             <a class="btn" href="?delete=<?= $row['id'] ?>"  ?>
+                            Supprimer
+                        </a>
+                        <?php else : ?>
+                            <a class="btn disabled" href="#"  ?>
                             Supprimer
                         </a>
                         <?php endif; ?>

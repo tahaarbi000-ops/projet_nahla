@@ -11,25 +11,46 @@ if(!isset($_SESSION["info"])){
         }
     if(isset($_GET["annuler"])){
             $idRes = $_GET["annuler"];
-            $sqlAnnuler = "UPDATE reservation SET etat = 'annuler' ";
+            $sqlModifi = "UPDATE reservation SET etat = 'annuler' ";
             $resAnnuler = mysqli_query($conn,$sqlAnnuler);
             header("location:./me-reservations.php");
 
         }
     if(isset($_GET["annuler"])){
             $idRes = $_GET["annuler"];
-            $sqlAnnuler = "UPDATE reservation SET etat = 'annuler' ";
-            $resAnnuler = mysqli_query($conn,$sqlAnnuler);
-            header("location:./me-reservations.php");
+            $sqlModifi = "UPDATE reservation SET etat = 'annuler' ";
+            $resModifi = mysqli_query($conn,$sqlModifi);
+            header("location:./reservations.php");
 
         }
-    if(isset($_GET["annuler"])){
-            $idRes = $_GET["annuler"];
-            $sqlAnnuler = "UPDATE reservation SET etat = 'annuler' ";
-            $resAnnuler = mysqli_query($conn,$sqlAnnuler);
-            header("location:./me-reservations.php");
-
+    if(isset($_GET["paye"])){
+            $idRes = $_GET["paye"];
+            $sqlModifi = "UPDATE reservation SET is_payed = 1 WHERE id = $idRes ";
+            $resModifi = mysqli_query($conn,$sqlModifi);
+            header("location:./reservations.php");
         }
+    if(isset($_GET["accept"])){
+            $idRes = $_GET["accept"];
+            $sqlModifi = "UPDATE reservation SET etat = 'accepté' ";
+            $resModifi = mysqli_query($conn,$sqlModifi);
+            header("location:./reservations.php");
+        }
+    if (isset($_GET["presence"])) {
+    $idRes = intval($_GET["presence"]); // Always sanitize input
+    $sqlPre = "SELECT présence_prop FROM reservation WHERE id = $idRes";
+    $resPre = mysqli_query($conn, $sqlPre);
+    $result = mysqli_fetch_assoc($resPre);
+
+    if ($result) {
+        $newValue = $result["présence_prop"] == 1 ? 0 : 1;
+        $sqlModifi = "UPDATE reservation SET présence_prop = $newValue WHERE id = $idRes";
+        mysqli_query($conn, $sqlModifi);
+    }
+
+    header("Location: ./reservations.php");
+    exit();
+}
+
     $userInfo = $_SESSION["info"];
     $role = $userInfo["role"];
     if($role == "client"){
@@ -42,7 +63,7 @@ if(!isset($_SESSION["info"])){
 <html lang="fr">
 <head>
     <meta charset="UTF-8">
-    <title>reservations</title>
+    <title>Liste des réservations</title>
     <link rel="stylesheet" href="style.css">
     <style>
         a{
@@ -84,6 +105,9 @@ if(!isset($_SESSION["info"])){
             color: white;
             text-decoration: none;
             border-radius: 4px;
+            border: none;
+            margin: 3px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -125,28 +149,33 @@ if(!isset($_SESSION["info"])){
                     echo "<li><a href='./me-reservations'>Réservations</a></li>";
                 }
                 else{
-                    echo "<li><a href='#'>Accueil</a></li>";
+                    echo "<li><a href='./index.php'>Accueil</a></li>";
                     if($info["role"] == "admin"){
-                        echo "<li><a href='./users'>utilisteurs</a></li>";
+                        echo "<li><a href='./users.php'>Utilisateurs</a></li>";
                     }
                     else{
                         echo "
-                        <li><a href='./users'>proprietaires</a></li>
+                        <li><a href='./users.php'>propriétaires</a></li>
                         ";
                     }
                     echo "
                         <li><a href='./reservations'>Réservations</a></li>
                         <li><a href='./Contrats.php'>Contrat</a></li>
-                        <li><a href='./localions.php'>Location</a></li>
+                        <li><a href='./locations.php'>Locations</a></li>
                     ";
                 }
             ?>
-            <li><a href="#">Paramètres</a></li>
-        </ul>
+<li class="has-submenu">
+        <a href="#" onclick="toggleSettings(event)">Paramètres ▾</a>
+        <ul class="submenu" id="settingsMenu">
+        <li><a href="./paramètres/index.php">Informations</a></li>
+        <li><a href="./paramètres/mot_passe.php">Mot de passe</a></li>
+    </ul>
+</li>        </ul>
     </aside>
         <main class="content">
             <div class="head">
-                <h2>Liste des Res</h2>
+                <h2>Liste des réservations</h2>
             </div>
 
 <table>
@@ -177,12 +206,22 @@ if(!isset($_SESSION["info"])){
     <?php 
         $today = date('Y-m-d'); // تاريخ اليوم
         $resDate = $row['date_res']; // تاريخ الحجز
-        $disabled = ($today >= $resDate || $row["etat"] == 'annuler' || $row["etat"] == 'refusé' ) ? "disabled" : ""; // إذا اليوم هو تاريخ الحجز
+        $disabled = ($today >= $resDate || $row["etat"] == 'annuler' || $row["etat"] == 'refusé' ) ? "disabled" : "";
         
     ?>
     <form method="get">
-    <button class="btn" name="annuler" value="<?= $row['id'] ?>" <?= $disabled ?>>
-        Annuler
+    <button class="btn" name="refuse" value="<?= $row['id'] ?>" <?= $disabled ?>>
+        refusé
+    </button>
+    <button class="btn" style="background: green;" name="accept" value="<?= $row['id'] ?>" <?= $disabled ?>>
+        accepté
+    </button>
+    <button style="background: #f2f01f;" class="btn" name="paye" value="<?= $row['id'] ?>">
+        payé
+    </button>
+    <button style="background: #007bff;" class="btn" name="presence" value="<?= $row['id'] ?>">
+        <?= $row['présence_prop'] == 0 ? 'Présent' : 'Absent' ?>
+
     </button>
     </form>
 </td>

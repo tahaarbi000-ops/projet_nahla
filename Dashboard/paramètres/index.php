@@ -1,5 +1,5 @@
 <?php
-require_once("../connect.php");
+require_once("../../connect.php");
 session_start();
 
 if(!isset($_SESSION["info"])){
@@ -10,7 +10,7 @@ if(!isset($_SESSION["info"])){
 if(isset($_GET["logout"])){
     session_unset();
     session_destroy();
-    header("location:../index.php");
+    header("location:../../index.php");
     exit;
 }
 
@@ -41,7 +41,7 @@ if(isset($_POST["btn"])){
 <head>
     <meta charset="UTF-8">
     <title>Ajouter une propriété</title>
-    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="../style.css">
 </head>
 <body>
 <!-- TOPBAR -->
@@ -76,30 +76,30 @@ if(isset($_POST["btn"])){
         <ul>
             <?php
                 if($info["role"] == "client"){
-                    echo "<li><a href='./me-reservations.php'>Réservations</a></li>";
+                    echo "<li><a href='../me-reservations.php'>Réservations</a></li>";
                 }
                 else{
-                    echo "<li><a href='./index.php'>Accueil</a></li>";
+                    echo "<li><a href='../index.php'>Accueil</a></li>";
                     if($info["role"] == "admin"){
-                        echo "<li><a href='./users.php'>Utilisateurs</a></li>";
+                        echo "<li><a href='../users.php'>Utilisateurs</a></li>";
                     }
                     else{
                         echo "
-                        <li><a href='./users'>proprietaires</a></li>
+                        <li><a href='../users'>proprietaires</a></li>
                         ";
                     }
                     echo "
-                        <li><a href='./reservations.php'>Réservations</a></li>
-                        <li><a href='./contrats.php'>Contrat</a></li>
-                        <li><a href='./locations.php'>Location</a></li>
+                        <li><a href='../reservations.php'>Réservations</a></li>
+                        <li><a href='../contrats.php'>Contrat</a></li>
+                        <li><a href='../locations.php'>Location</a></li>
                     ";
                 }
             ?>
 <li class="has-submenu">
     <a href="#" onclick="toggleSettings(event)">Paramètres ▾</a>
     <ul class="submenu" id="settingsMenu">
-        <li><a href="parametres.php?tab=info">Informations</a></li>
-        <li><a href="parametres.php?tab=password">Mot de passe</a></li>
+        <li><a href="./index.php">Informations</a></li>
+        <li><a href="./mot_passe.php">Mot de passe</a></li>
     </ul>
 </li>
         </ul>
@@ -139,12 +139,8 @@ if(isset($_POST["btn"])){
 </form>
 </main>
 
-<script src="./main"></script>
+<script src="../main.js"></script>
         <script>
-function toggleSettings(e){
-    e.preventDefault();
-    document.getElementById("settingsMenu").classList.toggle("show");
-}
 
 </script>
 </body>

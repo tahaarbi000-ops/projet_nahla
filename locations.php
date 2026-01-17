@@ -863,9 +863,8 @@
             <div class="nav-left">
                 <div class="logo">LUXELOC</div>
                 <ul>
-                    <li><a href="#accueil">Accueil</a></li>
-                    <li><a href="#proprietes">Propriétés</a></li>
-                    <li><a href="#services">Services</a></li>
+                    <li><a href="./index.php">Accueil</a></li>
+                    <li><a href="./locations.php">Locations</a></li>
                     <li><a href="#contact">Contact</a></li>
                 </ul>
             </div>
@@ -879,11 +878,11 @@
                 $user = mysqli_fetch_assoc($response);
                 echo "
                     <div class='user-menu' id='userMenu'>
-                    <span class='user-name'>👤 " . $user["nom"] . " " . $user["prenom"] . " </span>
+                    <span class='user-name'>" . $user["nom"] . " " . $user["prenom"] . " </span>
                     <div class='dropdown' id='userDropdown'>
-                        <a href='./profile.php'>⚙️ Paramètres</a>
-                        <a href='./client/dashboard.php'>📊 Mon espace</a>
-                        <a href='?logout' class='logout'>🚪 Déconnexion</a>
+                        <a href='./profile.php'>Paramètres</a>
+                        <a href='./client/dashboard.php'>Mon espace</a>
+                        <a href='?logout' class='logout'>Déconnexion</a>
                     </div>
                 </div>
                 ";
@@ -910,7 +909,7 @@
 <!-- FILTER SIDEBAR -->
 <aside class="filter-drawer" id="filterDrawer">
     <div class="filter-header">
-        <h3>🔍 Filtres</h3>
+        <h3>Filtres</h3>
         <button id="closeFilter">✖</button>
     </div>
 
@@ -944,7 +943,7 @@
 </aside>
 
 
-    <section class="properties" id="proprietes">
+    <section style="margin-top: 150px;" class="properties" id="proprietes">
         <div class="property-grid" id="propertyGrid">
             <?php
             
@@ -960,7 +959,8 @@ SELECT
     l.description
 FROM location l
 JOIN images i ON l.id = i.location_id
-WHERE 1=1
+WHERE 1=1 AND etat = 'libre'
+AND etat_loc = 'actif'
 ";
 
 /* ---- Filters ---- */
